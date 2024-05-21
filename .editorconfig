@@ -1,2 +1,8 @@
 [*]
 tab_width = 3
+
+[*.prisma]
+tab_width = 2
+
+[*.sql]
+tab_width = 4
