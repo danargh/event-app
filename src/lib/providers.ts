@@ -1,22 +1,10 @@
-import NextAuth from "next-auth";
 import ResendProvider from "next-auth/providers/resend";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import config from "@/config";
 import { emailTemplate } from "@/components/ui/emailTemplate";
+import GoogleProvider from "next-auth/providers/google";
+import { NextAuthConfig } from "next-auth";
 
-const prisma = new PrismaClient();
-
-export const {
-   handlers: { GET, POST },
-   auth,
-   signIn,
-   signOut,
-} = NextAuth({
-   adapter: PrismaAdapter(prisma),
-   session: {
-      strategy: "jwt",
-   },
+export default {
    providers: [
       ResendProvider({
          server: config.EMAIL_SERVER,
@@ -45,5 +33,9 @@ export const {
             });
          },
       }),
+      GoogleProvider({
+         // clientId: config.GOOGLE_ID,
+         // clientSecret: config.GOOGLE_SECRET,
+      }),
    ],
-});
+} satisfies NextAuthConfig;

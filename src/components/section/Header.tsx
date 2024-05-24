@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 type Props = {};
 
@@ -17,6 +18,26 @@ export default function Header({}: Props) {
                />
                <h4 className=" text-xl font-bold">EventApp</h4>
             </Link>
+            <nav>
+               <ul className="flex justify-center items-center gap-x-4">
+                  <li>
+                     <Link href="/events">Events</Link>
+                  </li>
+                  <li>
+                     <Link href="/events/new">Create Event</Link>
+                  </li>
+                  <li>
+                     <Link href="/login">
+                        <Button variant={"default"}>Login</Button>
+                     </Link>
+                  </li>
+                  <li>
+                     <Link href="/register">
+                        <Button variant={"outline"}>Register</Button>
+                     </Link>
+                  </li>
+               </ul>
+            </nav>
          </div>
       </header>
    );
