@@ -274,3 +274,12 @@ body {
 .react-datepicker__time-list-item--selected {
    background-color: #624cf5 !important;
 }
+
+/* TAMBAHAN */
+.div__center--vertically {
+   position: relative;
+   top: 50%;
+   -webkit-transform: translateY(-50%);
+   -ms-transform: translateY(-50%);
+   transform: translateY(-50%);
+}
