@@ -3,7 +3,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; // Import the zodResolver function from the correct path
-import { RegisterSchema } from "@/schemas";
+import { LoginSchema } from "@/schemas";
 import * as z from "zod";
 import {
    Form,
@@ -17,21 +17,30 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/form-alert";
 import Link from "next/link";
+import { login } from "@/actions/auth";
+import { useTransition, useState } from "react";
 
-type Props = {};
+export default function page() {
+   const [error, setError] = useState("");
+   const [sucess, setSucess] = useState("");
 
-export default function page({}: Props) {
-   const form = useForm<z.infer<typeof RegisterSchema>>({
-      resolver: zodResolver(RegisterSchema),
+   const [isTransition, setTransition] = useTransition();
+   const form = useForm<z.infer<typeof LoginSchema>>({
+      resolver: zodResolver(LoginSchema),
       defaultValues: {
          email: "",
          password: "",
-         confirmPassword: "",
       },
    });
 
-   const onSubmit = (data: z.infer<typeof RegisterSchema>) => {
-      console.log(data);
+   const onSubmit = (data: z.infer<typeof LoginSchema>) => {
+      setTransition(() => {
+         console.log(data);
+         login(data).then((res) => {
+            setError(res.error || "");
+            setSucess(res.success || "");
+         });
+      });
    };
 
    return (
@@ -42,7 +51,7 @@ export default function page({}: Props) {
                onSubmit={form.handleSubmit(onSubmit)}
             >
                <h2 className="flex justify-center text-2xl font-bold mb-4">
-                  Register
+                  Login
                </h2>
                <div className="flex flex-col gap-y-4">
                   <FormField
@@ -54,6 +63,7 @@ export default function page({}: Props) {
                            <FormControl>
                               <Input
                                  {...field}
+                                 disabled={isTransition}
                                  placeholder="johndoe@gmail.com"
                                  type="email"
                               />
@@ -69,31 +79,25 @@ export default function page({}: Props) {
                         <FormItem>
                            <FormLabel>Password</FormLabel>
                            <FormControl>
-                              <Input {...field} type="password" />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="confirmPassword"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Confirm Password</FormLabel>
-                           <FormControl>
-                              <Input {...field} type="password" />
+                              <Input
+                                 {...field}
+                                 disabled={isTransition}
+                                 placeholder="johndoe@gmail.com"
+                                 type="password"
+                              />
                            </FormControl>
                            <FormMessage />
                         </FormItem>
                      )}
                   />
                </div>
-               <FormAlert type="success">This is an error message</FormAlert>
+               {error && <FormAlert type="error">{error}</FormAlert>}
+               {sucess && <FormAlert type="success">{sucess}</FormAlert>}
                <Button
                   type="submit"
                   variant="default"
                   className="w-full mt-4 mb-2"
+                  disabled={isTransition}
                >
                   Submit
                </Button>
@@ -102,7 +106,7 @@ export default function page({}: Props) {
                   variant="outline"
                   className="flex justify-center mt-2 w-full text-primary"
                >
-                  <Link href="/login">Login</Link>
+                  <Link href="/auth/register">Register</Link>
                </Button>
             </form>
          </Form>

@@ -3,7 +3,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; // Import the zodResolver function from the correct path
-import { LoginSchema } from "@/schemas";
+import { RegisterSchema } from "@/schemas";
 import * as z from "zod";
 import {
    Form,
@@ -21,15 +21,16 @@ import Link from "next/link";
 type Props = {};
 
 export default function page({}: Props) {
-   const form = useForm<z.infer<typeof LoginSchema>>({
-      resolver: zodResolver(LoginSchema),
+   const form = useForm<z.infer<typeof RegisterSchema>>({
+      resolver: zodResolver(RegisterSchema),
       defaultValues: {
          email: "",
          password: "",
+         confirmPassword: "",
       },
    });
 
-   const onSubmit = (data: z.infer<typeof LoginSchema>) => {
+   const onSubmit = (data: z.infer<typeof RegisterSchema>) => {
       console.log(data);
    };
 
@@ -41,7 +42,7 @@ export default function page({}: Props) {
                onSubmit={form.handleSubmit(onSubmit)}
             >
                <h2 className="flex justify-center text-2xl font-bold mb-4">
-                  Login
+                  Register
                </h2>
                <div className="flex flex-col gap-y-4">
                   <FormField
@@ -68,11 +69,20 @@ export default function page({}: Props) {
                         <FormItem>
                            <FormLabel>Password</FormLabel>
                            <FormControl>
-                              <Input
-                                 {...field}
-                                 placeholder="johndoe@gmail.com"
-                                 type="password"
-                              />
+                              <Input {...field} type="password" />
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="confirmPassword"
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Confirm Password</FormLabel>
+                           <FormControl>
+                              <Input {...field} type="password" />
                            </FormControl>
                            <FormMessage />
                         </FormItem>
@@ -92,7 +102,7 @@ export default function page({}: Props) {
                   variant="outline"
                   className="flex justify-center mt-2 w-full text-primary"
                >
-                  <Link href="/register">Register</Link>
+                  <Link href="/auth/login">Login</Link>
                </Button>
             </form>
          </Form>
