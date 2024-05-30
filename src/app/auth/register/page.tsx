@@ -17,10 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/form-alert";
 import Link from "next/link";
+import { useState, useTransition } from "react";
+import { register } from "@/actions/auth";
 
-type Props = {};
+export default function page() {
+   const [error, setError] = useState("");
+   const [sucess, setSucess] = useState("");
+   const [isTransition, setTransition] = useTransition();
 
-export default function page({}: Props) {
    const form = useForm<z.infer<typeof RegisterSchema>>({
       resolver: zodResolver(RegisterSchema),
       defaultValues: {
@@ -31,7 +35,15 @@ export default function page({}: Props) {
    });
 
    const onSubmit = (data: z.infer<typeof RegisterSchema>) => {
-      console.log(data);
+      setError("");
+      setSucess("");
+
+      setTransition(() => {
+         register(data).then((res) => {
+            setError(res.error || "");
+            setSucess(res.success || "");
+         });
+      });
    };
 
    return (
@@ -45,6 +57,23 @@ export default function page({}: Props) {
                   Register
                </h2>
                <div className="flex flex-col gap-y-4">
+                  <FormField
+                     control={form.control}
+                     name="name"
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Name</FormLabel>
+                           <FormControl>
+                              <Input
+                                 {...field}
+                                 placeholder="john_doe"
+                                 type="text"
+                              />
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
                   <FormField
                      control={form.control}
                      name="email"
@@ -89,7 +118,8 @@ export default function page({}: Props) {
                      )}
                   />
                </div>
-               <FormAlert type="success">This is an error message</FormAlert>
+               {error && <FormAlert type="error">{error}</FormAlert>}
+               {sucess && <FormAlert type="success">{sucess}</FormAlert>}
                <Button
                   type="submit"
                   variant="default"

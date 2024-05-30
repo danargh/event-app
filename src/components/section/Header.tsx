@@ -27,12 +27,12 @@ export default function Header({}: Props) {
                      <Link href="/events/new">Create Event</Link>
                   </li>
                   <li>
-                     <Link href="/login">
+                     <Link href="/auth/login">
                         <Button variant={"default"}>Login</Button>
                      </Link>
                   </li>
                   <li>
-                     <Link href="/register">
+                     <Link href="/auth/register">
                         <Button variant={"outline"}>Register</Button>
                      </Link>
                   </li>

@@ -22,7 +22,6 @@ import { useTransition, useState } from "react";
 
 export default function page() {
    const [error, setError] = useState("");
-   const [sucess, setSucess] = useState("");
 
    const [isTransition, setTransition] = useTransition();
    const form = useForm<z.infer<typeof LoginSchema>>({
@@ -34,11 +33,11 @@ export default function page() {
    });
 
    const onSubmit = (data: z.infer<typeof LoginSchema>) => {
+      setError("");
+
       setTransition(() => {
-         console.log(data);
          login(data).then((res) => {
-            setError(res.error || "");
-            setSucess(res.success || "");
+            setError(res?.error || "");
          });
       });
    };
@@ -92,7 +91,7 @@ export default function page() {
                   />
                </div>
                {error && <FormAlert type="error">{error}</FormAlert>}
-               {sucess && <FormAlert type="success">{sucess}</FormAlert>}
+
                <Button
                   type="submit"
                   variant="default"
