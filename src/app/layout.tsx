@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { SessionProvider } from "next-auth/react";
 
 // create font for css variable
 const poppins = Poppins({
@@ -17,14 +18,17 @@ export const metadata: Metadata = {
    },
 };
 
-export default function RootLayout({
-   children,
-}: Readonly<{
+interface LayoutProps {
    children: React.ReactNode;
-}>) {
+   session: any;
+}
+
+export default function RootLayout({ children, session }: LayoutProps) {
    return (
       <html lang="en">
-         <body className={poppins.variable}>{children}</body>
+         <SessionProvider session={session}>
+            <body className={poppins.variable}>{children}</body>
+         </SessionProvider>
       </html>
    );
 }

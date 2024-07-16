@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; // Import the zodResolver function from the correct path
-import { LoginSchema } from "@/schemas";
+import { EventSchema, LoginSchema } from "@/schemas";
 import * as z from "zod";
 import {
    Form,
@@ -19,36 +19,56 @@ import { FormAlert } from "@/components/ui/form-alert";
 import Link from "next/link";
 import { login } from "@/actions/auth";
 import { useTransition, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+type Props = {
+   userId: string;
+   type: "Create" | "Update";
+   event?: z.infer<typeof EventSchema>;
+   eventId?: string;
+};
+
+export const eventDefaultValues = {
+   title: "",
+   description: "",
+   location: "",
+   imageUrl: "",
+   startDateTime: new Date(),
+   endDateTime: new Date(),
+   categoryId: "",
+   price: "",
+   isFree: false,
+   url: "",
+};
+
+export default function EventForm({ userId, type, event, eventId }: Props) {
    const [error, setError] = useState("");
-   const session = useSession();
-   const [isTransition, setTransition] = useTransition();
+   const [files, setFiles] = useState<File[]>([]);
+   const initialValues =
+      event && type === "Update" ? event : eventDefaultValues;
    const router = useRouter();
 
-   useEffect(() => {
-      if (session) {
-         router.push("/dashboard");
-      }
-   }, [router]);
+   // const { startUpload } = useUpload("imageUploader");
 
-   const form = useForm<z.infer<typeof LoginSchema>>({
-      resolver: zodResolver(LoginSchema),
-      defaultValues: {
-         email: "",
-         password: "",
-      },
+   const [isTransition, setTransition] = useTransition();
+   const form = useForm<z.infer<typeof EventSchema>>({
+      resolver: zodResolver(EventSchema),
+      defaultValues: initialValues,
    });
 
-   const onSubmit = (data: z.infer<typeof LoginSchema>) => {
+   const onSubmit = (data: z.infer<typeof EventSchema>) => {
       setError("");
 
       setTransition(() => {
-         login(data).then((res) => {
-            setError(res?.error || "");
-         });
+         let uploadedImageUrl = data.imageUrl;
+
+         if (files.length > 0) {
+            // const uploadedImages = await startUpload(files)
+            // if (!uploadedImages) {
+            //    return
+            // }
+            // uploadedImageUrl = uploadedImages[0].url;
+         }
       });
       form.reset();
    };
@@ -66,34 +86,16 @@ export default function page() {
                <div className="flex flex-col gap-y-4">
                   <FormField
                      control={form.control}
-                     name="email"
+                     name="title"
                      render={({ field }) => (
                         <FormItem>
-                           <FormLabel>Email</FormLabel>
+                           <FormLabel>Title</FormLabel>
                            <FormControl>
                               <Input
                                  {...field}
                                  disabled={isTransition}
                                  placeholder="johndoe@gmail.com"
-                                 type="email"
-                              />
-                           </FormControl>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="password"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Password</FormLabel>
-                           <FormControl>
-                              <Input
-                                 {...field}
-                                 disabled={isTransition}
-                                 placeholder="johndoe@gmail.com"
-                                 type="password"
+                                 type="text"
                               />
                            </FormControl>
                            <FormMessage />

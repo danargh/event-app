@@ -44,6 +44,7 @@ export default function page() {
             setSucess(res.success || "");
          });
       });
+      form.reset();
    };
 
    return (
