@@ -4,8 +4,8 @@ export interface Event {
    description: string | null;
    location: string | null;
    imageUrl: string;
-   startDateTime: Date;
-   endDateTime: Date;
+   startDateTime: Date | null;
+   endDateTime: Date | null;
    price: string;
    isFree: boolean;
    url: string | null;

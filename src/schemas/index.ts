@@ -24,16 +24,12 @@ export const RegisterSchema = z
 
 export const EventSchema = z.object({
    title: z.string().min(1),
-   description: z.string().nullable(),
-   location: z.string().nullable(),
+   description: z.string().min(1),
+   location: z.string(),
    imageUrl: z.string(),
    startDateTime: z.date(),
    endDateTime: z.date(),
    price: z.string(),
    isFree: z.boolean(),
-   url: z.string().nullable(),
-   userId: z.string(),
-   categoryId: z.string(),
-   createdAt: z.date(),
-   updatedAt: z.date(),
+   url: z.string(),
 });

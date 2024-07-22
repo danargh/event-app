@@ -1,4 +1,4 @@
-import EventForm from "@/components/ui/eventForm";
+import EventForm from "@/components/section/eventForm";
 import { auth } from "@/lib/auth";
 
 const CreateEvent = async () => {
