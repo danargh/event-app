@@ -17,9 +17,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/form-alert";
 import Link from "next/link";
-import { login } from "@/actions/auth";
 import { useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Checkbox } from "../ui/checkbox";
+import { DollarSign } from "lucide-react";
+import { LinkIcon } from "lucide-react";
 
 type Props = {
    userId: string;
@@ -57,20 +60,21 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
    });
 
    const onSubmit = (data: z.infer<typeof EventSchema>) => {
-      setError("");
+      console.log(data);
+      // setError("");
 
-      setTransition(() => {
-         let uploadedImageUrl = data.imageUrl;
+      // setTransition(() => {
+      //    let uploadedImageUrl = data.imageUrl;
 
-         if (files.length > 0) {
-            // const uploadedImages = await startUpload(files)
-            // if (!uploadedImages) {
-            //    return
-            // }
-            // uploadedImageUrl = uploadedImages[0].url;
-         }
-      });
-      form.reset();
+      //    if (files.length > 0) {
+      //       // const uploadedImages = await startUpload(files)
+      //       // if (!uploadedImages) {
+      //       //    return
+      //       // }
+      //       // uploadedImageUrl = uploadedImages[0].url;
+      //    }
+      // });
+      // form.reset();
    };
 
    return (
@@ -175,7 +179,7 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
                                  <Input
                                     {...field}
                                     disabled={isTransition}
-                                    placeholder="something"
+                                    placeholder="yyyy-MM-ddThh:mm"
                                     type="datetime-local"
                                     value={field.value.toString()}
                                  />
@@ -207,20 +211,65 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
                      />
                   </div>
                </div>
+
                <div className="flex flex-col gap-y-4 w-full">
                   <FormField
                      control={form.control}
                      name="price"
                      render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="w-full">
                            <FormLabel>Price</FormLabel>
                            <FormControl>
-                              <Input
-                                 {...field}
-                                 disabled={isTransition}
-                                 placeholder="something"
-                                 type="number"
-                              />
+                              <div className="flex gap-x-4">
+                                 <Input
+                                    type="number"
+                                    placeholder="Price"
+                                    {...field}
+                                    className=""
+                                 />
+                                 <FormField
+                                    control={form.control}
+                                    name="isFree"
+                                    render={({ field }) => (
+                                       <FormItem className="flex items-center justify-end">
+                                          <FormControl>
+                                             <div className="flex items-center justify-end">
+                                                <label
+                                                   htmlFor="isFree"
+                                                   className="text-nowrap pr-4"
+                                                >
+                                                   Free Ticket
+                                                </label>
+                                                <Checkbox
+                                                   onCheckedChange={
+                                                      field.onChange
+                                                   }
+                                                   checked={field.value}
+                                                   id="isFree"
+                                                   className="mr-2 h-5 w-5 border-2 border-primary-500"
+                                                />
+                                             </div>
+                                          </FormControl>
+                                          <FormMessage />
+                                       </FormItem>
+                                    )}
+                                 />
+                              </div>
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="url"
+                     render={({ field }) => (
+                        <FormItem className="w-full">
+                           <FormLabel>Url</FormLabel>
+                           <FormControl>
+                              <div className="flex">
+                                 <Input placeholder="URL" {...field} />
+                              </div>
                            </FormControl>
                            <FormMessage />
                         </FormItem>

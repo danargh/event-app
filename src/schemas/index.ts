@@ -23,13 +23,19 @@ export const RegisterSchema = z
    });
 
 export const EventSchema = z.object({
-   title: z.string().min(1),
-   description: z.string().min(1),
-   location: z.string(),
-   imageUrl: z.string(),
-   startDateTime: z.date(),
-   endDateTime: z.date(),
-   price: z.string(),
+   title: z.string().min(1, "Title is required"),
+   description: z.string().min(1, "Description is required"),
+   location: z.string().min(1, "Location is required"),
+   imageUrl: z.string().min(1, "Image URL is required"),
+   startDateTime: z.coerce.date({
+      required_error: "Please select a date and time",
+      invalid_type_error: "That's not a date!",
+   }),
+   endDateTime: z.coerce.date({
+      required_error: "Please select a date and time",
+      invalid_type_error: "That's not a date!",
+   }),
+   price: z.string().min(1, "Price is required"),
    isFree: z.boolean(),
-   url: z.string(),
+   url: z.string().min(1, "URL is required"),
 });
