@@ -283,3 +283,9 @@ body {
    -ms-transform: translateY(-50%);
    transform: translateY(-50%);
 }
+
+.bg-dotted-pattern {
+   background-image: url("/images/dotted-pattern.png");
+   background-repeat: no-repeat;
+   background-size: cover;
+}

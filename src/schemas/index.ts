@@ -24,6 +24,7 @@ export const RegisterSchema = z
 
 export const EventSchema = z.object({
    title: z.string().min(1, "Title is required"),
+   categoryId: z.string().min(1, "Category is required"),
    description: z.string().min(1, "Description is required"),
    location: z.string().min(1, "Location is required"),
    imageUrl: z.string().min(1, "Image URL is required"),

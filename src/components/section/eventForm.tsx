@@ -23,6 +23,9 @@ import Image from "next/image";
 import { Checkbox } from "../ui/checkbox";
 import { DollarSign } from "lucide-react";
 import { LinkIcon } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { DropdownMenu } from "@/components/ui/dropdown-menu";
+import Dropdown from "../ui/dropdown";
 
 type Props = {
    userId: string;
@@ -110,16 +113,33 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
                <div className="flex flex-col gap-y-4">
                   <FormField
                      control={form.control}
+                     name="categoryId"
+                     render={({ field }) => (
+                        <FormItem className="w-full">
+                           <FormLabel>Category</FormLabel>
+                           <FormControl>
+                              <Dropdown
+                                 onChangeHandler={field.onChange}
+                                 value={field.value}
+                              />
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+               </div>
+               <div className="flex flex-col gap-y-4">
+                  <FormField
+                     control={form.control}
                      name="description"
                      render={({ field }) => (
                         <FormItem>
                            <FormLabel>Description</FormLabel>
                            <FormControl>
-                              <Input
+                              <Textarea
+                                 className=""
+                                 placeholder="Description"
                                  {...field}
-                                 disabled={isTransition}
-                                 placeholder="something"
-                                 type="text"
                               />
                            </FormControl>
                            <FormMessage />
