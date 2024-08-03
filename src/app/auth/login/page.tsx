@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; // Import the zodResolver function from the correct path
-import { LoginSchema } from "@/schemas";
+import { LoginSchema } from "@/lib/validation";
 import * as z from "zod";
 import {
    Form,

@@ -4,7 +4,7 @@ import { emailTemplate } from "@/components/ui/emailTemplate";
 import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { LoginSchema } from "@/schemas";
+import { LoginSchema } from "@/lib/validation";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "@/models/user";
 

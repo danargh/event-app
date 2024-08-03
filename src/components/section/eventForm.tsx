@@ -3,7 +3,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; // Import the zodResolver function from the correct path
-import { EventSchema, LoginSchema } from "@/schemas";
+import { EventSchema, LoginSchema } from "@/lib/validation";
 import * as z from "zod";
 import {
    Form,
@@ -26,6 +26,12 @@ import { LinkIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import Dropdown from "../ui/dropdown";
+import { FileUploader } from "../ui/fileUploader";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+import { useUploadThing } from "@/lib/uploadthing";
+import { createEventAction } from "@/actions/event.actions";
 
 type Props = {
    userId: string;
@@ -50,46 +56,62 @@ export const eventDefaultValues = {
 export default function EventForm({ userId, type, event, eventId }: Props) {
    const [error, setError] = useState("");
    const [files, setFiles] = useState<File[]>([]);
-   const initialValues =
-      event && type === "Update" ? event : eventDefaultValues;
+   const [fileUrls, setFileUrls] = useState<string>(event?.imageUrl as string);
+   const [startDate, setStartDate] = useState(new Date());
+   const { startUpload } = useUploadThing("imageUploader");
+   const [isTransition, setTransition] = useTransition();
    const router = useRouter();
 
-   // const { startUpload } = useUpload("imageUploader");
+   const initialValues =
+      event && type === "Update" ? event : eventDefaultValues;
 
-   const [isTransition, setTransition] = useTransition();
    const form = useForm<z.infer<typeof EventSchema>>({
       resolver: zodResolver(EventSchema),
       defaultValues: initialValues,
    });
 
-   const onSubmit = (data: z.infer<typeof EventSchema>) => {
-      console.log(data);
+   const onSubmit = async (data: z.infer<typeof EventSchema>) => {
+      const eventData = data;
+
+      let uploadedImageUrl = data.imageUrl;
+
+      if (files.length > 0) {
+         const uploadedImages = await startUpload(files);
+
+         if (!uploadedImages) {
+            return;
+         }
+
+         uploadedImageUrl = uploadedImages[0].url;
+      }
+
+      if (type === "Create") {
+         try {
+            const newEvent = await createEventAction({
+               event: { ...data, imageUrl: uploadedImageUrl },
+               path: "/profile",
+               userId,
+            });
+
+            if (newEvent) {
+               form.reset();
+               router.push(`/events/${newEvent.id}`);
+            }
+         } catch (error) {
+            console.log(error);
+         }
+      }
       // setError("");
-
-      // setTransition(() => {
-      //    let uploadedImageUrl = data.imageUrl;
-
-      //    if (files.length > 0) {
-      //       // const uploadedImages = await startUpload(files)
-      //       // if (!uploadedImages) {
-      //       //    return
-      //       // }
-      //       // uploadedImageUrl = uploadedImages[0].url;
-      //    }
-      // });
       // form.reset();
    };
 
    return (
-      <div className="flex justify-center mx-auto h-screen">
+      <div className="flex justify-center mx-auto h-fit">
          <Form {...form}>
             <form
-               className="div__center--vertically flex flex-col gap-y-5 w-full h-fit p-6 rounded-lg "
+               className="flex flex-col gap-y-5 w-full h-fit p-6 rounded-lg "
                onSubmit={form.handleSubmit(onSubmit)}
             >
-               <h2 className="flex justify-center text-2xl font-bold mb-4">
-                  Create Event
-               </h2>
                <div className="flex flex-col gap-y-4">
                   <FormField
                      control={form.control}
@@ -175,11 +197,11 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
                         <FormItem>
                            <FormLabel>Picture</FormLabel>
                            <FormControl>
-                              <Input
-                                 {...field}
-                                 disabled={isTransition}
-                                 placeholder="something"
-                                 type="file"
+                              <FileUploader
+                                 onFieldChange={field.onChange}
+                                 imageUrl={field.value}
+                                 setImageUrl={setFileUrls}
+                                 setFiles={setFiles}
                               />
                            </FormControl>
                            <FormMessage />
@@ -196,10 +218,21 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
                            <FormItem>
                               <FormLabel>Start Date Time</FormLabel>
                               <FormControl>
+                                 {/* <DatePicker
+                                    className="border border-gray-200"
+                                    selected={field.value}
+                                    onChange={(date: Date | null) =>
+                                       field.onChange(date)
+                                    }
+                                    showTimeSelect
+                                    timeInputLabel="Time:"
+                                    dateFormat="MM/dd/yyyy h:mm aa"
+                                    wrapperClassName="datePicker"
+                                 /> */}
                                  <Input
                                     {...field}
                                     disabled={isTransition}
-                                    placeholder="yyyy-MM-ddThh:mm"
+                                    placeholder="something"
                                     type="datetime-local"
                                     value={field.value.toString()}
                                  />
@@ -303,9 +336,11 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
                   type="submit"
                   variant="default"
                   className="w-full mt-4 mb-2"
-                  disabled={isTransition}
+                  disabled={form.formState.isSubmitting}
                >
-                  Create
+                  {form.formState.isSubmitting
+                     ? "Creating..."
+                     : `${type} Event`}
                </Button>
             </form>
          </Form>

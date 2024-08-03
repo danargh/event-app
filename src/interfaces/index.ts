@@ -24,12 +24,11 @@ export interface CreateEventParams {
       description: string | null;
       location: string | null;
       imageUrl: string;
-      startDateTime: Date | null;
-      endDateTime: Date | null;
+      startDateTime: Date | string;
+      endDateTime: Date | string;
       price: string;
       isFree: boolean;
       url: string | null;
-      userId: string;
       categoryId: string;
    };
    path: string;

@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
    return (
-      <div className="flex h-screen flex-col">
+      <div className="flex flex-col">
          <Header />
          <main className="flex-1">{children}</main>
          <Footer />

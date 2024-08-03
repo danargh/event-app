@@ -57,13 +57,13 @@ model Session {
 }
 
 model Event {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   title         String
   description   String?
   location      String?
   imageUrl      String
-  startDateTime DateTime
-  endDateTime   DateTime
+  startDateTime DateTime?
+  endDateTime   DateTime?
   price         String
   isFree        Boolean
   url           String?
