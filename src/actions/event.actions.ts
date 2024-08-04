@@ -3,11 +3,15 @@
 import { CreateEventParams, Event } from "@/interfaces";
 import { handleError } from "@/utils/index";
 import { db } from "@/lib/database";
-import { createEvent, getEventsByUserId, getEventById } from "@/models/event";
+import {
+   createEvent,
+   getEventsByUserId,
+   getEventById,
+   getRelatedEventsByCategory,
+   getAllEvents,
+} from "@/models/event";
 
-export const createEventAction = async (
-   event: CreateEventParams
-): Promise<Event> => {
+export const createEventAction = async (event: CreateEventParams) => {
    try {
       await db.$connect();
 
@@ -15,7 +19,23 @@ export const createEventAction = async (
 
       return JSON.parse(JSON.stringify(newEvent));
    } catch (error) {
-      return handleError(error);
+      handleError(error);
+   }
+};
+
+export const getAllEventsAction = async (
+   searchText: string,
+   category: string,
+   page: number
+) => {
+   try {
+      await db.$connect();
+
+      const events = await getAllEvents(searchText, category, page);
+
+      return JSON.parse(JSON.stringify(events));
+   } catch (error) {
+      handleError(error);
    }
 };
 
@@ -42,3 +62,24 @@ export const getEventsByUserIdAction = async (userId: string) => {
       return handleError(error);
    }
 };
+
+export async function getRelatedEventsByCategoryAction(
+   categoryId: string,
+   eventId: string,
+   limit = 3,
+   page = 1
+) {
+   try {
+      await db.$connect();
+      const events = await getRelatedEventsByCategory(
+         eventId,
+         categoryId,
+         limit,
+         page
+      );
+
+      return JSON.parse(JSON.stringify(events));
+   } catch (error) {
+      return handleError(error);
+   }
+}

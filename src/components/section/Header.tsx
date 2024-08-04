@@ -2,7 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
+import { auth, signOut } from "@/lib/auth";
+import {
+   AlertDialog,
+   AlertDialogAction,
+   AlertDialogCancel,
+   AlertDialogContent,
+   AlertDialogDescription,
+   AlertDialogFooter,
+   AlertDialogHeader,
+   AlertDialogTitle,
+   AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type Props = {};
 
@@ -34,6 +45,62 @@ export const Header = async ({}: Props) => {
                                  Create Event
                               </Link>
                            </Button>
+                        </li>
+                        <li>
+                           <AlertDialog>
+                              <AlertDialogTrigger className="flex items-center gap-x-2">
+                                 <Image
+                                    src="favicon.svg"
+                                    width={38}
+                                    height={38}
+                                    alt="Profile"
+                                    className="rounded-full"
+                                 ></Image>
+                                 {session.user?.name}
+                              </AlertDialogTrigger>
+                              <AlertDialogContent className="bg-white">
+                                 <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                       Profile Info
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                       <table className="w-full">
+                                          <tr>
+                                             <td>Email</td>
+                                             <td>: {session.user?.email}</td>
+                                          </tr>
+                                          <tr>
+                                             <td>Name</td>
+                                             <td>: {session.user?.name}</td>
+                                          </tr>
+                                          <tr>
+                                             <td>Role</td>
+                                             <td>: {session.user?.role}</td>
+                                          </tr>
+                                       </table>
+                                    </AlertDialogDescription>
+                                 </AlertDialogHeader>
+                                 <AlertDialogFooter className="flex justify-between">
+                                    <form
+                                       action={async () => {
+                                          "use server";
+
+                                          await signOut();
+                                       }}
+                                    >
+                                       <Button
+                                          type="submit"
+                                          variant="destructive"
+                                       >
+                                          Logout
+                                       </Button>
+                                    </form>
+                                    <AlertDialogCancel>
+                                       Cancel
+                                    </AlertDialogCancel>
+                                 </AlertDialogFooter>
+                              </AlertDialogContent>
+                           </AlertDialog>
                         </li>
                      </>
                   ) : (

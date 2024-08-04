@@ -1,5 +1,6 @@
 import EventForm from "@/components/section/eventForm";
 import { auth } from "@/lib/auth";
+import { Session } from "next-auth";
 
 const CreateEvent = async () => {
    const session = await auth();

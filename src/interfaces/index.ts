@@ -1,4 +1,13 @@
 // USER INTERFACE
+export interface User {
+   id: string;
+   name: string;
+   email: string;
+   password: string;
+   role: string;
+   createdAt: Date;
+   updatedAt: Date;
+}
 
 // USER INTERFACE
 export interface Event {
@@ -12,8 +21,8 @@ export interface Event {
    price: string;
    isFree: boolean;
    url: string | null;
-   userId: string;
-   categoryId: string;
+   userId: User;
+   categoryId: Category;
    createdAt: Date;
    updatedAt: Date;
 }
@@ -35,6 +44,28 @@ export interface CreateEventParams {
 }
 
 // CATEGORY INTERFACE
+export interface Category {
+   id: string;
+   name: string;
+}
 export interface CreateCategoryParams {
    categoryName: string;
 }
+
+// URL QUERY PARAMS
+// ====== URL QUERY PARAMS
+export type UrlQueryParams = {
+   params: string;
+   key: string;
+   value: string | null;
+};
+
+export type RemoveUrlQueryParams = {
+   params: string;
+   keysToRemove: string[];
+};
+
+export type SearchParamProps = {
+   params: { id: string };
+   searchParams: { [key: string]: string | string[] | undefined };
+};
