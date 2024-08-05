@@ -31,7 +31,7 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { useUploadThing } from "@/lib/uploadthing";
-import { createEventAction } from "@/actions/event.actions";
+import { createEventAction, updateEventAction } from "@/actions/event.actions";
 
 type Props = {
    userId: string;
@@ -63,7 +63,13 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
    const router = useRouter();
 
    const initialValues =
-      event && type === "Update" ? event : eventDefaultValues;
+      event && type === "Update"
+         ? {
+              ...event,
+              startDateTime: new Date(event.startDateTime),
+              endDateTime: new Date(event.endDateTime),
+           }
+         : eventDefaultValues;
 
    const form = useForm<z.infer<typeof EventSchema>>({
       resolver: zodResolver(EventSchema),
@@ -96,6 +102,28 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
             if (newEvent) {
                form.reset();
                router.push(`/events/${newEvent.id}`);
+            }
+         } catch (error) {
+            console.log(error);
+         }
+      }
+
+      if (type === "Update") {
+         if (!eventId) {
+            router.back();
+            return;
+         }
+
+         try {
+            const updatedEvent = await updateEventAction(
+               userId,
+               { ...data, imageUrl: uploadedImageUrl, id: eventId }
+               // path: `/events/${eventId}`,
+            );
+
+            if (updatedEvent) {
+               form.reset();
+               router.push(`/events/${updatedEvent.id}`);
             }
          } catch (error) {
             console.log(error);

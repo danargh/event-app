@@ -1,4 +1,4 @@
-import { CreateEventParams, Event } from "@/interfaces";
+import { CreateEventParams, Event, UpdateEventParams } from "@/interfaces";
 import { db } from "@/lib/database";
 
 export const getEventById = async (id: string) => {
@@ -178,6 +178,18 @@ export const createEvent = async (newEvent: CreateEventParams) => {
          },
       });
       return event;
+   } catch (error) {
+      return error;
+   }
+};
+
+export const updateEvent = async (userId: string, event: UpdateEventParams) => {
+   try {
+      const updatedEvent = await db.event.update({
+         where: { id: event.id },
+         data: event,
+      });
+      return updatedEvent;
    } catch (error) {
       return error;
    }

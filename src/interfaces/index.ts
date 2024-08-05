@@ -42,6 +42,19 @@ export interface CreateEventParams {
    };
    path: string;
 }
+export interface UpdateEventParams {
+   id: string;
+   title: string;
+   description: string | null;
+   location: string | null;
+   imageUrl: string;
+   startDateTime: Date | string;
+   endDateTime: Date | string;
+   price: string;
+   isFree: boolean;
+   url: string | null;
+   categoryId: string;
+}
 
 // CATEGORY INTERFACE
 export interface Category {

@@ -22,7 +22,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
    return (
       <div className="group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
          <Link
-            href={`/events/${event.id}`}
+            href={`/dashboard/events/${event.id}`}
             style={{ backgroundImage: `url(${event.imageUrl})` }}
             className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
          />
@@ -30,7 +30,7 @@ const Card = async ({ event, hasOrderLink, hidePrice }: CardProps) => {
 
          {isEventCreator && !hidePrice && (
             <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
-               <Link href={`/events/${event.id}/update`}>
+               <Link href={`/dashboard/events/${event.id}/update`}>
                   <Edit />
                </Link>
 

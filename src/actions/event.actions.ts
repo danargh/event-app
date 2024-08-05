@@ -1,6 +1,6 @@
 "use server";
 
-import { CreateEventParams, Event } from "@/interfaces";
+import { CreateEventParams, Event, UpdateEventParams } from "@/interfaces";
 import { handleError } from "@/utils/index";
 import { db } from "@/lib/database";
 import {
@@ -9,6 +9,7 @@ import {
    getEventById,
    getRelatedEventsByCategory,
    getAllEvents,
+   updateEvent,
 } from "@/models/event";
 
 export const createEventAction = async (event: CreateEventParams) => {
@@ -83,3 +84,18 @@ export async function getRelatedEventsByCategoryAction(
       return handleError(error);
    }
 }
+
+export const updateEventAction = async (
+   userId: string,
+   event: UpdateEventParams
+) => {
+   try {
+      await db.$connect();
+
+      const updatedEvent = await updateEvent(userId, event);
+
+      return JSON.parse(JSON.stringify(updatedEvent));
+   } catch (error) {
+      return handleError(error);
+   }
+};
