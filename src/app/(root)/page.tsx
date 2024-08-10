@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -7,27 +5,18 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { useSession } from "next-auth/react";
+import { getAllEventsAction } from "@/actions/event.actions";
+import { SearchParamProps } from "@/interfaces";
+import Collection from "@/components/ui/collection";
+import Search from "@/components/ui/search";
+import CategoryFilter from "@/components/ui/category-filter";
 
-export default function Home() {
-   const router = useRouter();
-   const session = useSession();
+export default async function Home({ searchParams }: SearchParamProps) {
+   const page = Number(searchParams?.page) || 1;
+   const searchText = (searchParams?.query as string) || "";
+   const category = (searchParams?.category as string) || "";
 
-   useEffect(() => {
-      console.log(session);
-      if (session.data) {
-         router.push("/dashboard");
-      }
-   }, [router]);
-   // const page = Number(searchParams?.page) || 1;
-   // const searchText = (searchParams?.query as string) || "";
-   // const category = (searchParams?.category as string) || "";
-
-   // const events = await getAllEvents({
-   //    query: searchText,
-   //    category,
-   //    page,
-   //    limit: 6,
-   // });
+   const events = await getAllEventsAction(searchText, category, page);
 
    return (
       <>
@@ -65,11 +54,11 @@ export default function Home() {
             </h2>
 
             <div className="flex w-full flex-col gap-5 md:flex-row">
-               {/* <Search />
-               <CategoryFilter /> */}
+               <Search />
+               <CategoryFilter />
             </div>
 
-            {/* <Collection
+            <Collection
                data={events?.data}
                emptyTitle="No Events Found"
                emptyStateSubtext="Come back later"
@@ -77,7 +66,7 @@ export default function Home() {
                limit={6}
                page={page}
                totalPages={events?.totalPages}
-            /> */}
+            />
          </section>
       </>
    );

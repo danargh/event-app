@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod"; // Import the zodResolver function from the correct path
+import { zodResolver } from "@hookform/resolvers/zod";
 import { EventSchema, LoginSchema } from "@/lib/validation";
 import * as z from "zod";
 import {
@@ -101,7 +101,7 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
 
             if (newEvent) {
                form.reset();
-               router.push(`/events/${newEvent.id}`);
+               router.push(`dashboard/events/${newEvent.id}`);
             }
          } catch (error) {
             console.log(error);
@@ -123,7 +123,7 @@ export default function EventForm({ userId, type, event, eventId }: Props) {
 
             if (updatedEvent) {
                form.reset();
-               router.push(`/events/${updatedEvent.id}`);
+               router.push(`/dashboard/events/${updatedEvent.id}`);
             }
          } catch (error) {
             console.log(error);
