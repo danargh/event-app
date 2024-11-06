@@ -7,7 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { getAllEventsAction } from "@/actions/event.actions";
+import {
+   getAllEventsAction,
+   getRelatedEventsByCategoryAction,
+} from "@/actions/event.actions";
 
 export default async function Home({ searchParams }: SearchParamProps) {
    const page = Number(searchParams?.page) || 1;

@@ -1,3 +1,5 @@
+"use server";
+
 // import CheckoutButton from "@/components/ui/checkout-button";
 import Collection from "@/components/ui/collection";
 import {
@@ -8,21 +10,40 @@ import { formatDateTime } from "@/utils/index";
 import { Event, SearchParamProps } from "@/interfaces";
 import Image from "next/image";
 import { CalendarCheckIcon, MapPin } from "lucide-react";
+import Test from "@/components/ui/test";
+import RelatedCollection from "@/components/ui/related-collection";
 
 const EventDetails = async ({
    params: { id },
    searchParams,
 }: SearchParamProps) => {
-   const event: Event = await getEventByIdAction(id);
+   const event: Event | null = await getEventByIdAction(id);
+   if (!event) {
+      console.error("Event not found");
+      return null; // or return some fallback UI
+   }
 
-   const relatedEvents = await getRelatedEventsByCategoryAction(
-      event.categoryId.id,
-      event.id
-      // page: searchParams.page as string,
-   );
-
-   console.log("related", relatedEvents);
-
+   // const relatedEvents = await getRelatedEventsByCategoryAction(
+   //    event.categoryId.id,
+   //    event.id
+   //    // page: searchParams.page as string,
+   // );
+   // let relatedEvents;
+   // if (event && event.categoryId) {
+   //    relatedEvents = await getRelatedEventsByCategoryAction(
+   //       event.categoryId.id,
+   //       event.id
+   //    );
+   // } else {
+   //    console.error("Event or Category not found");
+   // }
+   // const [event, relatedEvents] = await Promise.all([
+   //    getEventByIdAction(id),
+   //    getRelatedEventsByCategoryAction(
+   //       "clzewysdm0000jy7354ujeq4y",
+   //       "clzflbyky0002ar20z0lm14mg"
+   //    ),
+   // ]);
    return (
       <>
          <section className="flex justify-center bg-primary-50 bg-dotted-pattern bg-contain">
@@ -116,7 +137,14 @@ const EventDetails = async ({
          <section className="wrapper my-8 flex flex-col gap-8 md:gap-12">
             <h2 className="h2-bold">Related Events</h2>
 
-            <Collection
+            {/* <Test event={relatedEvents?.data} /> */}
+
+            <RelatedCollection
+               eventId={event.id}
+               categoryId={event.categoryId.id}
+               collectionType="All_Events"
+            />
+            {/* <Collection
                data={relatedEvents?.data}
                emptyTitle="No Events Found"
                emptyStateSubtext="Come back later"
@@ -124,7 +152,7 @@ const EventDetails = async ({
                limit={3}
                page={searchParams.page as string}
                totalPages={relatedEvents?.totalPages}
-            />
+            /> */}
          </section>
       </>
    );
